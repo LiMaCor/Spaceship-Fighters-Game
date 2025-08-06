@@ -156,15 +156,6 @@ def main():
                 red_health -= 1
             if event.type == YELLOW_HIT:
                 yellow_health -= 1
-                
-        winner_text = ""
-        if red_health == 0:
-            winner_text = "Yellow wins!"
-        if yellow_health == 0:
-            winner_text = "Red wins!"
-        if winner_text != "":
-            draw_winner(winner_text)
-            break
         
         keys_pressed = pygame.key.get_pressed()
         yellow_handle_movement(keys_pressed, yellow)
@@ -173,6 +164,15 @@ def main():
         handle_bullets(yellow_bullets, red_bullets, yellow, red)
         
         draw(red, yellow, red_bullets, yellow_bullets, red_health, yellow_health)
+        
+        winner_text = ""
+        if red_health == 0:
+            winner_text = "Yellow wins!"
+        if yellow_health == 0:
+            winner_text = "Red wins!"
+        if winner_text != "":
+            draw_winner(winner_text)
+            break
 
     main()
 
