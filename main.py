@@ -8,6 +8,7 @@ pygame.display.set_caption("Spaceship Fighters")
 WHITE = (255, 255, 255)
 
 FPS = 60
+VEL = 5
 SPACESHIP_WIDTH, SPACESHIP_HEIGHT = 55, 40
 
 YELLOW_SPACESHIP_IMAGE = pygame.image.load(os.path.join("Assets", "spaceship_yellow.png"))
@@ -16,15 +17,49 @@ YELLOW_SPACESHIP = pygame.transform.rotate(pygame.transform.scale(YELLOW_SPACESH
 RED_SPACESHIP_IMAGE = pygame.image.load(os.path.join("Assets", "spaceship_red.png"))
 RED_SPACESHIP = pygame.transform.rotate(pygame.transform.scale(RED_SPACESHIP_IMAGE, (SPACESHIP_WIDTH, SPACESHIP_HEIGHT)), 270)
 
-def draw():
+def draw(red, yellow):
     WINDOW.fill(WHITE)
 
-    WINDOW.blit(YELLOW_SPACESHIP, (300, 100))
-    WINDOW.blit(RED_SPACESHIP, (700, 100))
+    WINDOW.blit(YELLOW_SPACESHIP, (yellow.x, yellow.y))
+    WINDOW.blit(RED_SPACESHIP, (red.x, red.y))
 
     pygame.display.update()
 
+def yellow_handle_movement(keys_pressed, yellow):
+    if keys_pressed[pygame.K_a]:
+        yellow.x -= VEL
+    if keys_pressed[pygame.K_d]:
+        yellow.x += VEL
+    if keys_pressed[pygame.K_w]:
+        yellow.y -= VEL
+    if keys_pressed[pygame.K_s]:
+        yellow.y += VEL
+
+def red_handle_movement(keys_pressed, red):
+    if keys_pressed[pygame.K_LEFT]:
+        red.x -= VEL
+    if keys_pressed[pygame.K_RIGHT]:
+        red.x += VEL
+    if keys_pressed[pygame.K_UP]:
+        red.y -= VEL
+    if keys_pressed[pygame.K_DOWN]:
+        red.y += VEL
+
 def main():
+    yellow = pygame.Rect(
+        100, 
+        300, 
+        SPACESHIP_WIDTH, 
+        SPACESHIP_HEIGHT
+    )
+    
+    red = pygame.Rect(
+        700, 
+        300, 
+        SPACESHIP_WIDTH, 
+        SPACESHIP_HEIGHT
+    )
+    
     clock = pygame.time.Clock()
     running = True
 
@@ -35,8 +70,12 @@ def main():
             if event.type == pygame.QUIT:
                 running = False
                 break
-
-        draw()
+        
+        keys_pressed = pygame.key.get_pressed()
+        yellow_handle_movement(keys_pressed, yellow)
+        red_handle_movement(keys_pressed, red)
+        
+        draw(red, yellow)
 
     pygame.quit()
 
