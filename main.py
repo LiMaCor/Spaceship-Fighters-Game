@@ -19,6 +19,7 @@ BORDER = pygame.Rect(
 )
 
 HEALTH_FONT = pygame.font.SysFont("comicsans", 40)
+WINNER_FONT = pygame.font.SysFont("comicsans", 100)
 
 FPS = 60
 VEL = 5
@@ -94,6 +95,13 @@ def handle_bullets(yellow_bullets, red_bullets, yellow, red):
         elif bullet.x < 0:
             red_bullets.remove(bullet)
 
+def draw_winner(text):
+    draw_text = WINNER_FONT.render(text, 1, WHITE)
+    WINDOW.blit(draw_text, (WIDTH // 2 - draw_text.get_width() / 2, HEIGHT // 2 - draw_text.get_height() / 2))
+    
+    pygame.display.update()
+    pygame.time.delay(5000)
+
 def main():
     yellow = pygame.Rect(
         100, 
@@ -124,7 +132,7 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
-                break
+                pygame.quit()
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_LCTRL and len(yellow_bullets) < MAX_BULLETS:
                     bullet = pygame.Rect(
@@ -150,12 +158,13 @@ def main():
                 yellow_health -= 1
                 
         winner_text = ""
-        if red_health <= 0:
+        if red_health == 0:
             winner_text = "Yellow wins!"
-        if yellow_health <= 0:
+        if yellow_health == 0:
             winner_text = "Red wins!"
         if winner_text != "":
-            pass
+            draw_winner(winner_text)
+            break
         
         keys_pressed = pygame.key.get_pressed()
         yellow_handle_movement(keys_pressed, yellow)
@@ -165,7 +174,7 @@ def main():
         
         draw(red, yellow, red_bullets, yellow_bullets, red_health, yellow_health)
 
-    pygame.quit()
+    main()
 
 if __name__ == "__main__":
     main()
