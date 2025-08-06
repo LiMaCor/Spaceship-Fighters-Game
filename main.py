@@ -6,6 +6,14 @@ WINDOW = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Spaceship Fighters")
 
 WHITE = (255, 255, 255)
+BLACK = (0, 0, 0)
+
+BORDER = pygame.Rect(
+    WIDTH / 2 - 5, 
+    0, 
+    10, 
+    HEIGHT
+)
 
 FPS = 60
 VEL = 5
@@ -19,6 +27,7 @@ RED_SPACESHIP = pygame.transform.rotate(pygame.transform.scale(RED_SPACESHIP_IMA
 
 def draw(red, yellow):
     WINDOW.fill(WHITE)
+    pygame.draw.rect(WINDOW, BLACK, BORDER)
 
     WINDOW.blit(YELLOW_SPACESHIP, (yellow.x, yellow.y))
     WINDOW.blit(RED_SPACESHIP, (red.x, red.y))
@@ -26,23 +35,23 @@ def draw(red, yellow):
     pygame.display.update()
 
 def yellow_handle_movement(keys_pressed, yellow):
-    if keys_pressed[pygame.K_a]:
+    if keys_pressed[pygame.K_a] and yellow.x - VEL > 0:
         yellow.x -= VEL
-    if keys_pressed[pygame.K_d]:
+    if keys_pressed[pygame.K_d] and yellow.x + VEL + yellow.width < BORDER.x:
         yellow.x += VEL
-    if keys_pressed[pygame.K_w]:
+    if keys_pressed[pygame.K_w] and yellow.y - VEL > 0:
         yellow.y -= VEL
-    if keys_pressed[pygame.K_s]:
+    if keys_pressed[pygame.K_s] and yellow.y + VEL + yellow.height < HEIGHT - 10:
         yellow.y += VEL
 
 def red_handle_movement(keys_pressed, red):
-    if keys_pressed[pygame.K_LEFT]:
+    if keys_pressed[pygame.K_LEFT] and red.x - VEL > BORDER.x + BORDER.width:
         red.x -= VEL
-    if keys_pressed[pygame.K_RIGHT]:
+    if keys_pressed[pygame.K_RIGHT] and red.x + VEL + red.width < WIDTH:
         red.x += VEL
-    if keys_pressed[pygame.K_UP]:
+    if keys_pressed[pygame.K_UP] and red.y - VEL > 0:
         red.y -= VEL
-    if keys_pressed[pygame.K_DOWN]:
+    if keys_pressed[pygame.K_DOWN] and red.y + VEL + red.height < HEIGHT - 10:
         red.y += VEL
 
 def main():
