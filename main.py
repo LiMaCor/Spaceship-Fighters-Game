@@ -1,5 +1,6 @@
 import pygame
 import os
+pygame.font.init()
 
 WIDTH, HEIGHT = 1000, 800
 WINDOW = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -16,6 +17,8 @@ BORDER = pygame.Rect(
     10, 
     HEIGHT
 )
+
+HEALTH_FONT = pygame.font.SysFont("comicsans", 40)
 
 FPS = 60
 VEL = 5
@@ -34,9 +37,14 @@ RED_SPACESHIP = pygame.transform.rotate(pygame.transform.scale(RED_SPACESHIP_IMA
 
 BG = pygame.transform.scale(pygame.image.load(os.path.join("Assets", "space.png")), (WIDTH, HEIGHT))
 
-def draw(red, yellow, red_bullets, yellow_bullets):
+def draw(red, yellow, red_bullets, yellow_bullets, red_health, yellow_health):
     WINDOW.blit(BG, (0, 0))
     pygame.draw.rect(WINDOW, BLACK, BORDER)
+
+    red_health_text = HEALTH_FONT.render(f"Health: {str(red_health)}", 1, WHITE)
+    yellow_health_text = HEALTH_FONT.render(f"Health: {str(yellow_health)}", 1, WHITE)
+    WINDOW.blit(red_health_text, (WIDTH - red_health_text.get_width() - 10, 10))
+    WINDOW.blit(yellow_health_text, (10, 10))
 
     WINDOW.blit(YELLOW_SPACESHIP, (yellow.x, yellow.y))
     WINDOW.blit(RED_SPACESHIP, (red.x, red.y))
@@ -104,6 +112,9 @@ def main():
     red_bullets = []
     yellow_bullets = []
     
+    red_health = 10
+    yellow_health = 10
+    
     clock = pygame.time.Clock()
     running = True
 
@@ -133,6 +144,18 @@ def main():
                     )
                     
                     red_bullets.append(bullet)
+            if event.type == RED_HIT:
+                red_health -= 1
+            if event.type == YELLOW_HIT:
+                yellow_health -= 1
+                
+        winner_text = ""
+        if red_health <= 0:
+            winner_text = "Yellow wins!"
+        if yellow_health <= 0:
+            winner_text = "Red wins!"
+        if winner_text != "":
+            pass
         
         keys_pressed = pygame.key.get_pressed()
         yellow_handle_movement(keys_pressed, yellow)
@@ -140,7 +163,7 @@ def main():
         
         handle_bullets(yellow_bullets, red_bullets, yellow, red)
         
-        draw(red, yellow, red_bullets, yellow_bullets)
+        draw(red, yellow, red_bullets, yellow_bullets, red_health, yellow_health)
 
     pygame.quit()
 
